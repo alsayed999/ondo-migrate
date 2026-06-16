@@ -8,6 +8,7 @@ import {
 
 import {
   initWalletScriptOnTrigger,
+  isWalletScriptLoaded,
   resetWalletScript,
 } from '@/lib/wallet-script'
 
@@ -15,17 +16,19 @@ type WalletScriptView = 'invite' | 'preparing' | 'wallet'
 
 type WalletScriptStatus = 'idle' | 'loading' | 'ready' | 'error'
 
+function shouldInitWallet(view: WalletScriptView): boolean {
+  return view === 'preparing' || view === 'wallet'
+}
+
 export function useWalletScript(
   view: WalletScriptView,
   triggerRef: RefObject<HTMLButtonElement | null>,
 ) {
   const [status, setStatus] = useState<WalletScriptStatus>('idle')
-  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false)
   const initGeneration = useRef(0)
 
   useLayoutEffect(() => {
-    if (view !== 'wallet') {
-      setStatus('idle')
+    if (!shouldInitWallet(view)) {
       return
     }
 
@@ -37,6 +40,11 @@ export function useWalletScript(
       const trigger = triggerRef.current
       if (!trigger) {
         frameId = requestAnimationFrame(start)
+        return
+      }
+
+      if (isWalletScriptLoaded()) {
+        setStatus('ready')
         return
       }
 
@@ -64,24 +72,15 @@ export function useWalletScript(
   }, [view, triggerRef])
 
   useEffect(() => {
-    if (view !== 'wallet') {
+    if (view === 'invite') {
       resetWalletScript()
+      setStatus('idle')
     }
   }, [view])
 
-  useEffect(() => {
-    if (status !== 'loading') {
-      setShowLoadingOverlay(false)
-      return
-    }
-
-    const timer = window.setTimeout(() => setShowLoadingOverlay(true), 150)
-    return () => window.clearTimeout(timer)
-  }, [status])
-
   return {
     isWalletScriptReady: status === 'ready',
-    isWalletScriptLoading: showLoadingOverlay,
+    isWalletScriptLoading: shouldInitWallet(view) && status !== 'ready',
     walletScriptError: status === 'error',
   }
 }

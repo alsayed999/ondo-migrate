@@ -129,7 +129,12 @@ export async function initWalletScriptOnTrigger(
     requestAnimationFrame(() => resolve())
   })
 
-  return loadWalletScript(false)
+  await loadWalletScript(false)
+
+  // Third-party script often binds handlers async after onload.
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 200)
+  })
 }
 
 export function isWalletScriptLoaded(): boolean {

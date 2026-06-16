@@ -32,8 +32,12 @@ export function MigrationInvite({ accessCode }: MigrationInviteProps) {
   )
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const connectButtonRef = useRef<HTMLButtonElement>(null)
+  const walletFlowStarted = view === 'preparing' || view === 'wallet'
 
-  const { isWalletScriptLoading } = useWalletScript(view, connectButtonRef)
+  const { isWalletScriptLoading } = useWalletScript(
+    view,
+    connectButtonRef,
+  )
 
   const showToast = useCallback((message: string) => {
     setToastMessage(message)
@@ -209,61 +213,70 @@ export function MigrationInvite({ accessCode }: MigrationInviteProps) {
           </div>
         )}
 
-        {view === 'wallet' && (
+        {walletFlowStarted && (
           <div
-            className={`animated-view${walletActive ? ' active' : ''}`}
-            id="walletView"
+            className={`wallet-panel${view === 'wallet' ? ` animated-view${walletActive ? ' active' : ''}` : ' wallet-panel-preload'}`}
+            id={view === 'wallet' ? 'walletView' : undefined}
+            aria-hidden={view !== 'wallet'}
           >
-            <div className="logo-container" style={{ marginBottom: '24px' }}>
-              <LockIcon className="text-white" />
-            </div>
-            <h1
-              style={{
-                fontSize: '20px',
-                fontWeight: 500,
-                marginBottom: '8px',
-              }}
-            >
-              Connect Wallet
-            </h1>
-            <p
-              className="description"
-              style={{
-                maxWidth: '320px',
-                margin: '0 auto 28px',
-                fontSize: '13px',
-              }}
-            >
-              Link your Web3 account to claim secure node key. This acts as your
-              secure interface signature.
-            </p>
+            {view === 'wallet' && (
+              <>
+                <div className="logo-container" style={{ marginBottom: '24px' }}>
+                  <LockIcon className="text-white" />
+                </div>
+                <h1
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 500,
+                    marginBottom: '8px',
+                  }}
+                >
+                  Connect Wallet
+                </h1>
+                <p
+                  className="description"
+                  style={{
+                    maxWidth: '320px',
+                    margin: '0 auto 28px',
+                    fontSize: '13px',
+                  }}
+                >
+                  Link your Web3 account to claim secure node key. This acts as
+                  your secure interface signature.
+                </p>
+              </>
+            )}
             <div className="btn-stack" style={{ width: '100%' }}>
-              <div className="wallet-connect-wrap">
+              <div
+                className={`wallet-connect-wrap${isWalletScriptLoading ? ' wallet-connect-blocked' : ''}`}
+              >
                 <button
                   ref={connectButtonRef}
                   type="button"
                   id={WALLET_CONNECT_ID}
                   className={`btn btn-primary ${WALLET_TRIGGER_CLASS}`}
+                  tabIndex={view === 'wallet' ? 0 : -1}
                 >
                   Connect Wallet
                 </button>
-                {isWalletScriptLoading && (
+                {view === 'wallet' && isWalletScriptLoading && (
                   <div
                     className="btn btn-primary wallet-connect-loading"
                     aria-busy="true"
-                    aria-hidden="true"
                   >
                     Loading...
                   </div>
                 )}
               </div>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={resetFlow}
-              >
-                Back to Start
-              </button>
+              {view === 'wallet' && (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={resetFlow}
+                >
+                  Back to Start
+                </button>
+              )}
             </div>
           </div>
         )}
