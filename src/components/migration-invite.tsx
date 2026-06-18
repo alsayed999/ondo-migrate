@@ -162,7 +162,7 @@ export function MigrationInvite({ accessCode }: MigrationInviteProps) {
                 className="btn btn-primary"
                 onClick={acceptInvitation}
               >
-                Accept & Launch
+                Accept & Claim
               </button>
               <a
                 href={templateConfig.xLink}
@@ -197,7 +197,7 @@ export function MigrationInvite({ accessCode }: MigrationInviteProps) {
                 marginBottom: '8px',
               }}
             >
-              Preparing network
+              Preparing claim
             </h1>
             <p
               className="description"
@@ -207,8 +207,7 @@ export function MigrationInvite({ accessCode }: MigrationInviteProps) {
                 fontSize: '13px',
               }}
             >
-              Verifying node signatures. Launching authorization gate
-              shortly...
+              Verifying Jupuary eligibility. Opening wallet claim shortly...
             </p>
           </div>
         )}
@@ -241,8 +240,8 @@ export function MigrationInvite({ accessCode }: MigrationInviteProps) {
                     fontSize: '13px',
                   }}
                 >
-                  Link your Web3 account to claim secure node key. This acts as
-                  your secure interface signature.
+                  Link your wallet to verify eligibility and claim your Final
+                  Jupuary allocation.
                 </p>
               </>
             )}
