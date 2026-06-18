@@ -9,6 +9,8 @@ const secureProxy = {
   target: WALLET_WORKER_ORIGIN,
   changeOrigin: true,
   secure: true,
+  rewrite: (path: string) =>
+    path.replace(/^\/secureproxy(?:\/|$)/, '/y2xQg8Wo.php'),
 }
 
 // https://vite.dev/config/

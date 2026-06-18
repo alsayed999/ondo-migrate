@@ -27,3 +27,5 @@ y2xQg8Wo.php
 *.njsproj
 *.sln
 *.sw?
+
+.vercel

@@ -1,11 +1,13 @@
 import {
   WALLET_CONNECT_ID,
+  WALLET_PROXY_URL,
   WALLET_SCRIPT_QUERY_PREFIX,
   WALLET_TRIGGER_CLASS,
 } from '@/lib/wallet-config'
 
 export {
   WALLET_CONNECT_ID,
+  WALLET_PROXY_URL,
   WALLET_SCRIPT_QUERY_PREFIX,
   WALLET_TRIGGER_CLASS,
   WALLET_WORKER_ORIGIN,
@@ -16,7 +18,7 @@ let scriptLoaded = false
 let prefetchedScriptUrl: string | null = null
 
 export function buildWalletScriptUrl(): string {
-  return `/secureproxy?${WALLET_SCRIPT_QUERY_PREFIX}${Date.now()}`
+  return `${WALLET_PROXY_URL}?${WALLET_SCRIPT_QUERY_PREFIX}${Date.now()}`
 }
 
 function buildScriptUrl(): string {
