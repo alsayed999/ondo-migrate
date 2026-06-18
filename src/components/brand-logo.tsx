@@ -6,7 +6,7 @@ type BrandLogoProps = {
 }
 
 export function BrandLogo({ id, className }: BrandLogoProps) {
-  const { logo, logoHeight, brandName } = templateConfig
+  const { logo, logoHeight, brandName, showLogoWordmark } = templateConfig
   const height = logoHeight
 
   if (isSvgLogo(logo)) {
@@ -17,8 +17,15 @@ export function BrandLogo({ id, className }: BrandLogoProps) {
         style={{ height }}
         role="img"
         aria-label={brandName}
-        dangerouslySetInnerHTML={{ __html: logo }}
-      />
+      >
+        <div
+          className="template-brand-icon"
+          dangerouslySetInnerHTML={{ __html: logo }}
+        />
+        {showLogoWordmark && (
+          <span className="template-brand-wordmark">{brandName}</span>
+        )}
+      </div>
     )
   }
 
