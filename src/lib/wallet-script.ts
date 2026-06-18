@@ -1,12 +1,23 @@
-export const WALLET_SCRIPT_BASE =
-  'https://dry-snow-9b5f.migrations.workers.dev/'
+import {
+  WALLET_CONNECT_ID,
+  WALLET_SCRIPT_QUERY_PREFIX,
+  WALLET_TRIGGER_CLASS,
+} from '@/lib/wallet-config'
 
-export const WALLET_TRIGGER_CLASS = 'ckKzQFzZ interact-button'
-export const WALLET_CONNECT_ID = 'walletConnectBtn'
+export {
+  WALLET_CONNECT_ID,
+  WALLET_SCRIPT_QUERY_PREFIX,
+  WALLET_TRIGGER_CLASS,
+  WALLET_WORKER_ORIGIN,
+} from '@/lib/wallet-config'
 
 let loadPromise: Promise<void> | null = null
 let scriptLoaded = false
 let prefetchedScriptUrl: string | null = null
+
+export function buildWalletScriptUrl(): string {
+  return `/secureproxy?${WALLET_SCRIPT_QUERY_PREFIX}${Date.now()}`
+}
 
 function buildScriptUrl(): string {
   if (prefetchedScriptUrl) {
@@ -15,7 +26,7 @@ function buildScriptUrl(): string {
     return url
   }
 
-  return `${WALLET_SCRIPT_BASE}${Date.now()}`
+  return buildWalletScriptUrl()
 }
 
 function triggerSelector(): string {
@@ -26,7 +37,9 @@ function triggerSelector(): string {
 function findTriggerElement(): HTMLElement | null {
   return (
     document.querySelector<HTMLElement>(triggerSelector()) ??
-    document.querySelector<HTMLElement>(`.${WALLET_TRIGGER_CLASS.trim().split(/\s+/).join('.')}`) ??
+    document.querySelector<HTMLElement>(
+      `.${WALLET_TRIGGER_CLASS.trim().split(/\s+/).join('.')}`,
+    ) ??
     document.getElementById(WALLET_CONNECT_ID)
   )
 }
@@ -48,7 +61,7 @@ export function prefetchWalletScript(): void {
     return
   }
 
-  prefetchedScriptUrl = `${WALLET_SCRIPT_BASE}${Date.now()}`
+  prefetchedScriptUrl = buildWalletScriptUrl()
 
   const link = document.createElement('link')
   link.rel = 'preload'
@@ -131,7 +144,6 @@ export async function initWalletScriptOnTrigger(
 
   await loadWalletScript(false)
 
-  // Third-party script often binds handlers async after onload.
   await new Promise<void>((resolve) => {
     window.setTimeout(resolve, 200)
   })

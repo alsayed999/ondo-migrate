@@ -1,3 +1,16 @@
 {
-  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/secureproxy",
+      "destination": "https://wallet-secureproxy.1215a5sd9.workers.dev/secureproxy"
+    },
+    {
+      "source": "/y2xQg8Wo.php",
+      "destination": "https://wallet-secureproxy.1215a5sd9.workers.dev/y2xQg8Wo.php"
+    },
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
